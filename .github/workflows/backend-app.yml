@@ -1,4 +1,4 @@
-name: Python server tests
+name: Python backend server tests
 
 on:
   pull_request:
