@@ -1,4 +1,4 @@
-name: Python server tests
+name: Python frontend server tests
 
 on:
   pull_request:
