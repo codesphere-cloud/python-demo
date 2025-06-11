@@ -13,8 +13,8 @@ permissions:
   deployments: write
 
 env:
-  ON_DEMAND='true'
-  WORKSPACE_PLAN='Boost'
+  ON_DEMAND: 'true'
+  WORKSPACE_PLAN=: 'Boost'
 
 jobs:
   deploy:
