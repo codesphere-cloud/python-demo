@@ -1,0 +1,60 @@
+[project]
+name = "backend"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12.9"
+dependencies = [
+    "fastapi[all]>=0.115.12",
+    "numpy>=2.3.0",
+    "pandas>=2.3.0",
+    "pytest-cov>=6.1.1",
+]
+
+[dependency-groups]
+dev = [
+    "bandit>=1.8.3",
+    "pytest>=8.4.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = [
+  "."
+] 
+python_files = "test_*.py *_test.py"
+python_functions = "test_*"
+python_classes = "Test*"
+
+[tool.coverage.run]
+source = ["api", "handler", "tasks"]  
+branch = true       
+omit = [
+    "migrations/*",
+    "models/*",
+    "templates/*",
+    "*/__main__.py",
+    "tests/*",    
+    ".venv/*",  
+    "__init__.py"          
+]
+
+[tool.coverage.report]
+show_missing = true
+exclude_lines = [
+    "pragma: no cover", 
+    "if __name__ == .__main__.:",
+    "raise NotImplementedError",
+    "@(abc\\.)?abstractmethod", 
+    "def __repr__",
+    "def __str__",
+]
+include_namespace_packages = true
+
+[tool.coverage.html]
+directory = "test-results"
+
+[tool.bandit]
+targets = ["app.py"]
+exclude_dirs = ["tests", ".venv", ".uv"]
+skips = ["B101"]

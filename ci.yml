@@ -1,0 +1,65 @@
+schemaVersion: v0.2
+prepare:
+  steps:
+    - name: install nix dependencies
+      command: nix-env -iA nixpkgs.uv
+    - name: install Codesphere cli tool
+      command: mkdir -p $HOME/.local/bin && wget -qO-
+        'https://api.github.com/repos/codesphere-cloud/cs-go/releases/latest' |
+        grep linux_amd64 | grep browser_download_url | sed s/.*https/https/ |
+        sed s/\".*$// | xargs wget -O $HOME/.local/bin/cs && chmod +x
+        $HOME/.local/bin/cs
+    - name: copy template .env file
+      command: cp -n .env.sample .env
+    - name: "set ev vars "
+      command: . .env && export $CS_TOKEN && cs set-env -w $CODESPHERE_APP_ID -t
+        $TEAM_ID --env-var UV_CACHE_DIR=$PWD/.codesphere-internal/.uv --env-var
+        UV_PYTHON_CACHE_DIR=$PWD/.codesphere-internal/.uv-python
+    - name: install frontend environment
+      command: cd frontend && uv sync
+    - name: install backend environment
+      command: "cd backend && uv sync "
+test:
+  steps:
+    - name: test frontend
+      command: cd frontend && uv run pytest --junitxml=junit/test-results.xml
+        --cov-report=xml --cov-report=html --cov=. | tee pytest-coverage.txt
+    - name: test backend
+      command: cd backend && uv run pytest --junitxml=junit/test-results.xml
+        --cov-report=xml --cov-report=html --cov=. | tee pytest-coverage.txt
+    - name: security check frontend
+      command: 'bandit -r . -c pyproject.toml --format=custom --msg-template
+        "{abspath}:{line}: {test_id}[{severity}]: {msg}" -o bandit-results.txt'
+    - name: security check backend
+      command: 'bandit -r . -c pyproject.toml --format=custom --msg-template
+        "{abspath}:{line}: {test_id}[{severity}]: {msg}" -o bandit-results.txt'
+run:
+  frontend:
+    steps:
+      - name: start frontend application
+        command: cd frontend && uv run streamlit run --server.address 0.0.0.0
+          --server.port 3000 main.py
+    plan: 8
+    replicas: 1
+    isPublic: true
+    network:
+      path: /
+      stripPath: false
+  backend:
+    steps:
+      - name: start backend application
+        command: cd backend && uv run uvicorn app:app --reload --port 3000 --host
+          0.0.0.0
+    plan: 8
+    replicas: 1
+    isPublic: false
+  api-docs:
+    steps:
+      - name: deploy docs
+        command: cd backend && uv run uvicorn doc:app_docs --host 0.0.0.0 --port 3000
+    plan: 8
+    replicas: 1
+    isPublic: true
+    network:
+      path: /api
+      stripPath: false

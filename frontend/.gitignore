@@ -1,0 +1,6 @@
+junit/*
+coverage.xml
+pytest-coverage.txt
+.coverage
+
+__pycache__/*
