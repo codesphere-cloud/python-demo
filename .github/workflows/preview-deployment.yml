@@ -12,10 +12,6 @@ permissions:
   pull-requests: read
   deployments: write
 
-env:
-  ON_DEMAND: 'true'
-  WORKSPACE_PLAN=: 'Boost'
-
 jobs:
   deploy:
     concurrency: codesphere
@@ -32,5 +28,5 @@ jobs:
             email: ${{ secrets.CODESPHERE_EMAIL }}
             password: ${{ secrets.CODESPHERE_PASSWORD }}
             team: ${{ secrets.CODESPHERE_TEAM }}
-            plan: $WORKSPACE_PLAN
-            onDemand: $ON_DEMAND         
+            plan: 'Boost'
+            onDemand: 'true'          
