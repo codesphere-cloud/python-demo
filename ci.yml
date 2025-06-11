@@ -12,8 +12,8 @@ prepare:
     - name: copy template .env file
       command: cp -n .env.sample .env
     - name: "set ev vars "
-      command: . .env && export $CS_TOKEN && cs set-env -w $CODESPHERE_APP_ID -t
-        $TEAM_ID --env-var UV_CACHE_DIR=$PWD/.codesphere-internal/.uv --env-var
+      command: . .env && cs set-env -w $WORKSPACE_ID -t $TEAM_ID --env-var
+        UV_CACHE_DIR=$PWD/.codesphere-internal/.uv --env-var
         UV_PYTHON_CACHE_DIR=$PWD/.codesphere-internal/.uv-python
     - name: install frontend environment
       command: cd frontend && uv sync
