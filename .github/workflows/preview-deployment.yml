@@ -1,0 +1,36 @@
+on:
+  workflow_dispatch:
+  pull_request:
+    types:
+    - closed
+    - opened
+    - reopened
+    - synchronize
+
+permissions:
+  contents: read
+  pull-requests: read
+  deployments: write
+
+env:
+  ON_DEMAND='true'
+  WORKSPACE_PLAN='Boost'
+
+jobs:
+  deploy:
+    concurrency: codesphere
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Deploy
+        uses: codesphere-cloud/gh-action-deploy@main
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        with:
+            email: ${{ secrets.CODESPHERE_EMAIL }}
+            password: ${{ secrets.CODESPHERE_PASSWORD }}
+            team: ${{ secrets.CODESPHERE_TEAM }}
+            plan: $WORKSPACE_PLAN
+            onDemand: $ON_DEMAND         
