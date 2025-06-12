@@ -19,23 +19,23 @@ prepare:
         --env-var UV_CACHE_DIR=$PWD/.codesphere-internal/.uv --env-var
         UV_PYTHON_CACHE_DIR=$PWD/.codesphere-internal/.uv-python
     - name: install frontend environment
-      command: cd frontend && { [ ! -d ".venv" ] && uv venv; uv sync; }
+      command: . ./env && cd frontend && { [ ! -d ".venv" ] && uv venv; uv sync; }
     - name: install backend environment
-      command: cd backend && { [ ! -d ".venv" ] && uv venv; uv sync; }
+      command: . ./env && cd backend && { [ ! -d ".venv" ] && uv venv; uv sync; }
 test:
   steps:
     - name: test frontend
-      command: cd frontend && uv run pytest
+      command: . ./env && cd frontend && uv run pytest
     - name: test backend
-      command: "cd backend &&  uv run pytest "
+      command: ". ./env && cd backend &&  uv run pytest "
     - name: security check frontend
-      command: 'cd frontend && uv run bandit -r . -c pyproject.toml --format=custom
-        --msg-template "{abspath}:{line}: {test_id}[{severity}]: {msg}" -o
-        bandit-results.txt'
+      command: '. ./env && cd frontend && uv run bandit -r . -c pyproject.toml
+        --format=custom --msg-template "{abspath}:{line}: {test_id}[{severity}]:
+        {msg}" -o bandit-results.txt'
     - name: security check backend
-      command: 'cd backend && uv run bandit -r . -c pyproject.toml --format=custom
-        --msg-template "{abspath}:{line}: {test_id}[{severity}]: {msg}" -o
-        bandit-results.txt'
+      command: '. ./env && cd backend && uv run bandit -r . -c pyproject.toml
+        --format=custom --msg-template "{abspath}:{line}: {test_id}[{severity}]:
+        {msg}" -o bandit-results.txt'
 run:
   frontend:
     steps:
