@@ -102,7 +102,7 @@ jobs:
         pytest-coverage-path: backend/pytest-coverage.txt
         junitxml-path: backend/junit/test-results.xml
         title: Pytest Coverage Report - Backend
-        junitxml-title: Test Execution Summary
+        junitxml-title: Test Execution Summary - Backend
 
     - name: Minimize uv cache
       run: uv cache prune --ci
