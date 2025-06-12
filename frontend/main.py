@@ -31,7 +31,7 @@ chart_type = st.sidebar.selectbox(
 @st.cache_data 
 def fetch_data(url: str, points: int):
     try:
-        response = requests.get(url, params={"points": points})
+        response = requests.get(url, params={"points": points}, timeout=3)
         response.raise_for_status() 
         
         data = response.json()      
