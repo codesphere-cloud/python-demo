@@ -1,14 +1,16 @@
 schemaVersion: v0.2
 prepare:
   steps:
-    - name: install nix dependencies
-      command: nix-env -iA nixpkgs.uv
     - name: install Codesphere cli tool
       command: mkdir -p $HOME/.local/bin && wget -qO-
         'https://api.github.com/repos/codesphere-cloud/cs-go/releases/latest' |
         grep linux_amd64 | grep browser_download_url | sed s/.*https/https/ |
         sed s/\".*$// | xargs wget -O $HOME/.local/bin/cs && chmod +x
         $HOME/.local/bin/cs
+    - name: install uv standalone version
+      command: curl -LsSf https://astral.sh/uv/install.sh | env
+        UV_INSTALL_DIR="$HOME/.local/bin/uv" sh && chmod +x $HOME/.local/bin/uv
+        && chmod +x $HOME/.local/bin/uvx
     - name: copy template .env file
       command: cp -n .env.sample .env
     - name: "set ev vars "
@@ -16,9 +18,9 @@ prepare:
         UV_CACHE_DIR=$PWD/.codesphere-internal/.uv --env-var
         UV_PYTHON_CACHE_DIR=$PWD/.codesphere-internal/.uv-python
     - name: install frontend environment
-      command: cd frontend && uv sync
+      command: cd frontend && uv venv && uv sync
     - name: install backend environment
-      command: "cd backend && uv sync "
+      command: "cd backend && uv venv && uv sync "
 test:
   steps:
     - name: test frontend
