@@ -15,9 +15,6 @@ jobs:
   pytest:
     runs-on: ubuntu-latest
 
-    env:
-      UV_CACHE_DIR: ${{ github.workspace }}/backend/.uv_cache
-
     permissions:
       contents: read          
       pull-requests: write    
@@ -94,13 +91,14 @@ jobs:
     - name: Run tests with pytest using uv
       run: |
         cd backend
-        pytest --junitxml=junit/test-results.xml --cov=. | tee pytest-coverage.txt
+        pytest --junitxml=junit/test-results.xml --cov-report=xml --cov-report=html --cov=. | tee pytest-coverage.txt
       shell: bash
 
     - name: Pytest coverage comment
       if: github.event_name == 'pull_request' && always()
       uses: MishaKav/pytest-coverage-comment@main 
       with:
+        pytest-xml-coverage-path: backend/coverage.xml
         pytest-coverage-path: backend/pytest-coverage.txt
         junitxml-path: backend/junit/test-results.xml
         title: Pytest Coverage Report - Backend
