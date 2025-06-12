@@ -41,7 +41,7 @@ run:
     steps:
       - name: start frontend application
         command: . ./env && cd frontend && uv run streamlit run --server.address 0.0.0.0
-          --server.port 3000 main.p
+          --server.port 3000 main.py
     plan: 8
     replicas: 1
     isPublic: true
