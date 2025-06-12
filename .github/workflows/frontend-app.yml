@@ -15,9 +15,6 @@ jobs:
   pytest:
     runs-on: ubuntu-latest
 
-    env:
-      UV_CACHE_DIR: ${{ github.workspace }}/frontend/.uv_cache
-
     permissions:
       contents: read          
       pull-requests: write    
@@ -29,11 +26,8 @@ jobs:
     - name: Install uv package manager
       uses: astral-sh/setup-uv@v6
       with:
-        enable-cache: true
-        cache-dependency-glob: frontend/uv.lock
         activate-environment: true
         working-directory: frontend
-        cache-local-path: ${{ github.workspace }}/frontend/.uv_cache
       
     - name: Install dependencies using uv
       run: |
