@@ -30,10 +30,10 @@ jobs:
       uses: astral-sh/setup-uv@v6
       with:
         enable-cache: true
-        cache-dependency-glob: server/uv.lock
+        cache-dependency-glob: backend/uv.lock
         activate-environment: true
-        working-directory: server
-        cache-local-path: ${{ github.workspace }}/server/.uv_cache
+        working-directory: backend
+        cache-local-path: ${{ github.workspace }}/backend/.uv_cache
       
     - name: Install dependencies using uv
       run: |
