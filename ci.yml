@@ -10,7 +10,6 @@ prepare:
     - name: install uv standalone version
       command: curl -LsSf https://astral.sh/uv/install.sh | env
         UV_INSTALL_DIR="$HOME/.local/bin/uv" sh && chmod +x $HOME/.local/bin/uv
-        && chmod +x $HOME/.local/bin/uvx
     - name: copy template .env file
       command: cp -n .env.sample .env
     - name: "set ev vars "
