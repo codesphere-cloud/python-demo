@@ -29,4 +29,7 @@ jobs:
             password: ${{ secrets.CODESPHERE_PASSWORD }}
             team: ${{ secrets.CODESPHERE_TEAM }}
             plan: 'Boost'
-            onDemand: 'true'          
+            onDemand: 'true'
+            env: |
+              TEAM_ID=${{ secrets.CODESPHERE_TEAM_ID }}
+              CS_TOKEN=${{ secrets.CODESPHERE_TOKEN }}
