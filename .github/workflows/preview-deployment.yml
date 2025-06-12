@@ -1,3 +1,5 @@
+name: 'Deploy to codesphere'
+
 on:
   workflow_dispatch:
   pull_request:
@@ -11,25 +13,23 @@ permissions:
   contents: read
   pull-requests: read
   deployments: write
+  statuses: write
 
 jobs:
   deploy:
     concurrency: codesphere
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
       - name: Deploy
-        uses: codesphere-cloud/gh-action-deploy@main
+        uses: docker://ghcr.io/codesphere-cloud/codesphere-monorepo/integrations/github-action:gh-action-ws-url-5dd1ca4b0e
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         with:
             email: ${{ secrets.CODESPHERE_EMAIL }}
             password: ${{ secrets.CODESPHERE_PASSWORD }}
             team: ${{ secrets.CODESPHERE_TEAM }}
-            plan: 'Boost'
-            onDemand: 'true'
+            plan: Micro
             env: |
-              TEAM_ID=${{ secrets.CODESPHERE_TEAM_ID }}
               CS_TOKEN=${{ secrets.CODESPHERE_TOKEN }}
+            apiUrl: https://codesphere.com/
+            tlsAllowUnauthorized: "true"
