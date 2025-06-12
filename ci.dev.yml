@@ -10,6 +10,8 @@ prepare:
     - name: install uv standalone version
       command: curl -LsSf https://astral.sh/uv/install.sh | env
         UV_INSTALL_DIR="$HOME/app" sh && chmod +x $HOME/app/uv
+    - name: copy template .env file
+      command: cp -n .env.sample .env
     - name: "set ev vars "
       command: . .env && cs set-env -w $WORKSPACE_ID -t $TEAM_ID --env-var
         UV_PYTHON_INSTALL_DIR=$PWD/.codesphere-internal/.uv-python-install
@@ -17,21 +19,30 @@ prepare:
         --env-var UV_CACHE_DIR=$PWD/.codesphere-internal/.uv --env-var
         UV_PYTHON_CACHE_DIR=$PWD/.codesphere-internal/.uv-python
     - name: install frontend environment
-      command: . ./env && cd frontend && { [ ! -d ".venv" ] && uv venv; uv sync
-        --no-dev; }
+      command: . ./env && cd frontend && { [ ! -d ".venv" ] && uv venv; uv sync; }
     - name: install backend environment
-      command: . ./env && cd backend && { [ ! -d ".venv" ] && uv venv; uv sync
-        --no-dev; }
+      command: . ./env && cd backend && { [ ! -d ".venv" ] && uv venv; uv sync; }
 test:
-  steps: []
+  steps:
+    - name: test frontend
+      command: . ./env && cd frontend && uv run pytest
+    - name: test backend
+      command: ". ./env && cd backend &&  uv run pytest "
+    - name: security check frontend
+      command: '. ./env && cd frontend && uv run bandit -r . -c pyproject.toml
+        --format=custom --msg-template "{abspath}:{line}: {test_id}[{severity}]:
+        {msg}" -o bandit-results.txt'
+    - name: security check backend
+      command: '. ./env && cd backend && uv run bandit -r . -c pyproject.toml
+        --format=custom --msg-template "{abspath}:{line}: {test_id}[{severity}]:
+        {msg}" -o bandit-results.txt'
 run:
   frontend:
     steps:
       - name: start frontend application
-        command: ". ./env && cd frontend && uv run streamlit run main.py
-          --server.headless true --server.address 0.0.0.0 --server.port 3000
-          --browser.gatherUsageStats false --logger.level info "
-    plan: 8
+        command: . ./env && cd frontend && uv run streamlit run --server.address 0.0.0.0
+          --server.port 3000 main.py
+    plan: 20
     replicas: 1
     isPublic: true
     network:
@@ -40,17 +51,17 @@ run:
   backend:
     steps:
       - name: start backend application
-        command: . ./env && cd backend && uv run uvicorn app:app --port 3000 --host
-          0.0.0.0 --workers 2
-    plan: 8
+        command: . ./env && cd backend && uv run uvicorn app:app --reload --port 3000
+          --host 0.0.0.0
+    plan: 20
     replicas: 1
     isPublic: false
   api-docs:
     steps:
       - name: deploy docs
         command: . ./env && cd backend && uv run uvicorn doc:app_docs --host 0.0.0.0
-          --port 3000 --workers 2
-    plan: 8
+          --port 3000
+    plan: 20
     replicas: 1
     isPublic: true
     network:
