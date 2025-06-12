@@ -4,7 +4,7 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review, draft] 
     paths:
-      - 'server/**'
+      - 'frontend/**'
       - '.github/workflows/frontend-app.yml' 
 
 permissions:
@@ -37,7 +37,7 @@ jobs:
       
     - name: Install dependencies using uv
       run: |
-        cd server && uv sync
+        cd frontend && uv sync
       shell: bash
 
     - name: Run Bandit security check on server code
@@ -104,9 +104,9 @@ jobs:
       if: github.event_name == 'pull_request' && always()
       uses: MishaKav/pytest-coverage-comment@main 
       with:
-        pytest-xml-coverage-path: server/coverage.xml
-        pytest-coverage-path: server/pytest-coverage.txt
-        junitxml-path: server/junit/test-results.xml
+        pytest-xml-coverage-path: frontend/coverage.xml
+        pytest-coverage-path: frontend/pytest-coverage.txt
+        junitxml-path: frontend/junit/test-results.xml
         title: Pytest Coverage Report
         junitxml-title: Test Execution Summary
 
