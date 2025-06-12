@@ -61,7 +61,7 @@ jobs:
         COMMENT_BODY_FILE="bandit-comment-body.md"
         echo "COMMENT_BODY_FILE=${COMMENT_BODY_FILE}" >> $GITHUB_ENV
 
-        echo "### 🛡️ Bandit Security Scan Results" > $COMMENT_BODY_FILE
+        echo "### 🛡️ Bandit Frontend Security Scan Results" > $COMMENT_BODY_FILE
         echo "" >> $COMMENT_BODY_FILE 
         echo "" >> $COMMENT_BODY_FILE
         echo "" >> $COMMENT_BODY_FILE 
@@ -81,7 +81,7 @@ jobs:
       with:
         issue-number: ${{ github.event.pull_request.number }}
         comment-author: 'github-actions[bot]'
-        body-includes: Bandit Security Scan Results
+        body-includes: Bandit Frontend Security Scan Results
 
     - name: Post Bandit results as PR comment
       if: github.event_name == 'pull_request' && always()
@@ -107,7 +107,7 @@ jobs:
         pytest-xml-coverage-path: frontend/coverage.xml
         pytest-coverage-path: frontend/pytest-coverage.txt
         junitxml-path: frontend/junit/test-results.xml
-        title: Pytest Coverage Report
+        title: Pytest Coverage Report - Frontend
         junitxml-title: Test Execution Summary
 
     - name: Minimize uv cache
