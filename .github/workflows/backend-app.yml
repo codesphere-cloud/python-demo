@@ -98,7 +98,7 @@ jobs:
       if: github.event_name == 'pull_request' && always()
       uses: MishaKav/pytest-coverage-comment@main 
       with:
-        identifier: backend-coverage-report
+        unique-id-for-comment: backend-coverage-report
         pytest-xml-coverage-path: backend/coverage.xml
         pytest-coverage-path: backend/pytest-coverage.txt
         junitxml-path: backend/junit/test-results.xml
