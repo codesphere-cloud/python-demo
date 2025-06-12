@@ -29,6 +29,7 @@ jobs:
             password: ${{ secrets.CODESPHERE_PASSWORD }}
             team: ${{ secrets.CODESPHERE_TEAM }}
             plan: Micro
+            onDemand: true
             env: |
               CS_TOKEN=${{ secrets.CODESPHERE_TOKEN }}
             apiUrl: https://codesphere.com/
