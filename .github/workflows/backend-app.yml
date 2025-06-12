@@ -5,7 +5,7 @@ on:
     types: [opened, synchronize, reopened, ready_for_review, draft] 
     paths:
       - 'server/**'
-      - '.github/workflows/python-app.yml' 
+      - '.github/workflows/backend-app.yml' 
 
 permissions:
   contents: write 
