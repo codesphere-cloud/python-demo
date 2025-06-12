@@ -1,10 +1,10 @@
-name: Python server tests
+name: Python backend server tests
 
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review, draft] 
     paths:
-      - 'server/**'
+      - 'backend/**'
       - '.github/workflows/backend-app.yml' 
 
 permissions:
@@ -14,9 +14,6 @@ permissions:
 jobs:
   pytest:
     runs-on: ubuntu-latest
-
-    env:
-      UV_CACHE_DIR: ${{ github.workspace }}/backend/.uv_cache
 
     permissions:
       contents: read          
@@ -29,18 +26,15 @@ jobs:
     - name: Install uv package manager
       uses: astral-sh/setup-uv@v6
       with:
-        enable-cache: true
-        cache-dependency-glob: backend/uv.lock
         activate-environment: true
         working-directory: backend
-        cache-local-path: ${{ github.workspace }}/backend/.uv_cache
       
     - name: Install dependencies using uv
       run: |
-        cd server && uv sync
+        cd backend && uv sync
       shell: bash
 
-    - name: Run Bandit security check on server code
+    - name: Run Bandit security check on backend code
       id: bandit_check 
       run: |
         echo "Running Bandit security check..."
@@ -61,7 +55,7 @@ jobs:
         COMMENT_BODY_FILE="bandit-comment-body.md"
         echo "COMMENT_BODY_FILE=${COMMENT_BODY_FILE}" >> $GITHUB_ENV
 
-        echo "### 🛡️ Bandit Security Scan Results" > $COMMENT_BODY_FILE
+        echo "### 🛡️ Bandit Backend Security Scan Results" > $COMMENT_BODY_FILE
         echo "" >> $COMMENT_BODY_FILE 
         echo "" >> $COMMENT_BODY_FILE
         echo "" >> $COMMENT_BODY_FILE 
@@ -81,7 +75,7 @@ jobs:
       with:
         issue-number: ${{ github.event.pull_request.number }}
         comment-author: 'github-actions[bot]'
-        body-includes: Bandit Security Scan Results
+        body-includes: Bandit Backend Security Scan Results
 
     - name: Post Bandit results as PR comment
       if: github.event_name == 'pull_request' && always()
@@ -104,11 +98,12 @@ jobs:
       if: github.event_name == 'pull_request' && always()
       uses: MishaKav/pytest-coverage-comment@main 
       with:
+        unique-id-for-comment: backend-coverage-report
         pytest-xml-coverage-path: backend/coverage.xml
         pytest-coverage-path: backend/pytest-coverage.txt
         junitxml-path: backend/junit/test-results.xml
-        title: Pytest Coverage Report
-        junitxml-title: Test Execution Summary
+        title: Pytest Coverage Report - Backend
+        junitxml-title: Test Execution Summary - Backend
 
     - name: Minimize uv cache
       run: uv cache prune --ci

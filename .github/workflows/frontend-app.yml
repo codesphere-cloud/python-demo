@@ -1,11 +1,11 @@
-name: Python server tests
+name: Python frontend server tests
 
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review, draft] 
     paths:
-      - 'server/**'
-      - '.github/workflows/python-app.yml' 
+      - 'frontend/**'
+      - '.github/workflows/frontend-app.yml' 
 
 permissions:
   contents: write 
@@ -14,9 +14,6 @@ permissions:
 jobs:
   pytest:
     runs-on: ubuntu-latest
-
-    env:
-      UV_CACHE_DIR: ${{ github.workspace }}/frontend/.uv_cache
 
     permissions:
       contents: read          
@@ -34,7 +31,7 @@ jobs:
       
     - name: Install dependencies using uv
       run: |
-        cd server && uv sync
+        cd frontend && uv sync
       shell: bash
 
     - name: Run Bandit security check on server code
@@ -58,7 +55,7 @@ jobs:
         COMMENT_BODY_FILE="bandit-comment-body.md"
         echo "COMMENT_BODY_FILE=${COMMENT_BODY_FILE}" >> $GITHUB_ENV
 
-        echo "### 🛡️ Bandit Security Scan Results" > $COMMENT_BODY_FILE
+        echo "### 🛡️ Bandit Frontend Security Scan Results" > $COMMENT_BODY_FILE
         echo "" >> $COMMENT_BODY_FILE 
         echo "" >> $COMMENT_BODY_FILE
         echo "" >> $COMMENT_BODY_FILE 
@@ -78,7 +75,7 @@ jobs:
       with:
         issue-number: ${{ github.event.pull_request.number }}
         comment-author: 'github-actions[bot]'
-        body-includes: Bandit Security Scan Results
+        body-includes: Bandit Frontend Security Scan Results
 
     - name: Post Bandit results as PR comment
       if: github.event_name == 'pull_request' && always()
@@ -101,11 +98,12 @@ jobs:
       if: github.event_name == 'pull_request' && always()
       uses: MishaKav/pytest-coverage-comment@main 
       with:
-        pytest-xml-coverage-path: server/coverage.xml
-        pytest-coverage-path: server/pytest-coverage.txt
-        junitxml-path: server/junit/test-results.xml
-        title: Pytest Coverage Report
-        junitxml-title: Test Execution Summary
+        unique-id-for-comment: frontend-coverage-report
+        pytest-xml-coverage-path: frontend/coverage.xml
+        pytest-coverage-path: frontend/pytest-coverage.txt
+        junitxml-path: frontend/junit/test-results.xml
+        title: Pytest Coverage Report - Frontend
+        junitxml-title: Test Execution Summary - Frontend
 
     - name: Minimize uv cache
       run: uv cache prune --ci
