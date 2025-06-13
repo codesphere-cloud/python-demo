@@ -8,7 +8,7 @@ API_URL = f"http://ws-server-{os.getenv('WORKSPACE_ID', 123456)}-backend.workspa
 
 st.set_page_config(
     page_title="Streamlit Demo",
-    page_icon="🎈",
+    page_icon="🎉",
     layout="wide"
 )
 
