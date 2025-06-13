@@ -1,0 +1,17 @@
+image: atlassian/default-image:3
+
+pipelines:
+  pull-requests:
+    '**':
+      - step:
+          deployment: Bitbucket Preview Deployment
+          script:
+          - pipe: docker://ghcr.io/codesphere-cloud/codesphere-monorepo/integrations/bitbucket-ci:latest
+            variables:
+              ACCESS_TOKEN: $ACCESS_TOKEN
+              EMAIL: $CODESPHERE_EMAIL
+              PASSWORD: $CODESPHERE_PASSWORD 
+              TEAM: Hackathon Playground
+              PLAN: Micro
+              ENV: |
+                testing=abc
