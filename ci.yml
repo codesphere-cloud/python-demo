@@ -44,7 +44,7 @@ run:
         command: . ./env && cd backend && uv run uvicorn app:app --port 3000 --host
           0.0.0.0 --workers 2
     plan: 8
-    replicas: 1
+    replicas: 2
     isPublic: false
   api-docs:
     steps:
