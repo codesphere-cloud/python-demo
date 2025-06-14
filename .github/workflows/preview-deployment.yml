@@ -32,5 +32,9 @@ jobs:
             onDemand: true
             env: |
               CS_TOKEN=${{ secrets.CODESPHERE_TOKEN }}
+              UV_PYTHON_INSTALL_DIR=/home/user/app/.codesphere-internal/.uv-python-install
+              UV_PYTHON_BIN_DIR=/home/user/app/.codesphere-internal/.uv-python-bin
+              UV_CACHE_DIR=/home/user/app/.codesphere-internal/.uv
+              UV_PYTHON_CACHE_DIR=/home/user/app/.codesphere-internal/.uv-python
             apiUrl: https://codesphere.com/
             tlsAllowUnauthorized: "true"
