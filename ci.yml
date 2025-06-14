@@ -11,12 +11,6 @@ prepare:
       command: curl -LsSf https://astral.sh/uv/install.sh | env
         UV_INSTALL_DIR="$HOME/app" sh && chmod +x $HOME/app/uv
     - command: cp -n .env.sample .env
-    - name: "set ev vars "
-      command: . .env && cs set-env -w $WORKSPACE_ID -t $TEAM_ID --env-var
-        UV_PYTHON_INSTALL_DIR=$PWD/.codesphere-internal/.uv-python-install
-        --env-var UV_PYTHON_BIN_DIR=$PWD/.codesphere-internal/.uv-python-bin
-        --env-var UV_CACHE_DIR=$PWD/.codesphere-internal/.uv --env-var
-        UV_PYTHON_CACHE_DIR=$PWD/.codesphere-internal/.uv-python
     - name: install frontend environment
       command: . ./env && cd frontend && { [ ! -d ".venv" ] && uv venv; uv sync
         --no-dev; }
