@@ -14,7 +14,7 @@ run:
         command: "cd frontend && .venv/bin/python -m streamlit run main.py
           --server.headless true --server.address 0.0.0.0 --server.port 3000
           --browser.gatherUsageStats false --logger.level info"
-    plan: 8
+    plan: 20
     replicas: 1
     isPublic: true
     network:
@@ -25,7 +25,7 @@ run:
       - name: start backend application
         command: cd backend && .venv/bin/python -m uvicorn app:app --port 3000 --host
           0.0.0.0 --workers 2
-    plan: 8
+    plan: 20
     replicas: 1
     isPublic: false
   api-docs:
@@ -33,7 +33,7 @@ run:
       - name: deploy docs
         command: cd backend && .venv/bin/python -m uvicorn doc:app_docs --host 0.0.0.0
           --port 3000 --workers 2
-    plan: 8
+    plan: 20
     replicas: 1
     isPublic: true
     network:

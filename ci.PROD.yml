@@ -1,0 +1,45 @@
+schemaVersion: v0.2
+prepare:
+  steps:
+    - name: install frontend dependencies
+      command: cd frontend && virtualenv .venv && .venv/bin/pip install -r requirements.txt
+    - name: install backend dependencies  
+      command: cd backend && virtualenv .venv && .venv/bin/pip install -r requirements.txt
+    - name: optimize python bytecode
+      command: cd frontend && .venv/bin/python -m compileall -b .
+    - name: optimize backend bytecode
+      command: cd backend && .venv/bin/python -m compileall -b .
+test:
+  steps: []
+run:
+  frontend:
+    steps:
+      - name: start frontend application
+        command: "cd frontend && .venv/bin/python -m streamlit run main.py --server.headless true
+          --server.address 0.0.0.0 --server.port 3000 --browser.gatherUsageStats
+          false --logger.level warning --server.enableCORS false --server.enableXsrfProtection true"
+    plan: 8
+    replicas: 2
+    isPublic: true
+    network:
+      path: /
+      stripPath: false
+  backend:
+    steps:
+      - name: start backend application
+        command: cd backend && .venv/bin/python -m uvicorn app:app --port 3000 --host 0.0.0.0
+          --workers 4 --worker-class uvicorn.workers.UvicornWorker --access-log --no-use-colors
+    plan: 8
+    replicas: 2
+    isPublic: false
+  api-docs:
+    steps:
+      - name: deploy docs
+        command: cd backend && .venv/bin/python -m uvicorn doc:app_docs --host 0.0.0.0 --port 3000
+          --workers 2 --access-log --no-use-colors
+    plan: 8
+    replicas: 1
+    isPublic: true
+    network:
+      path: /api
+      stripPath: false

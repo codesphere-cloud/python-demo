@@ -1,0 +1,10 @@
+# Main dependencies
+fastapi[all]>=0.115.12
+numpy>=2.3.0
+pandas>=2.3.0
+pytest-cov>=6.1.1
+pytest-profiling>=1.8.1
+
+# Dev dependencies (for testing and security checks)
+bandit>=1.8.3
+pytest>=8.4.0

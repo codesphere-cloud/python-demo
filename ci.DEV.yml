@@ -1,0 +1,52 @@
+schemaVersion: v0.2
+prepare:
+  steps:
+    - name: install frontend dependencies
+      command: cd frontend && virtualenv .venv && .venv/bin/pip install -r requirements.txt
+    - name: install backend dependencies
+      command: cd backend && virtualenv .venv && .venv/bin/pip install -r requirements.txt
+test:
+  steps:
+    - name: test frontend
+      command: cd frontend && .venv/bin/python -m pytest
+    - name: test backend
+      command: cd backend && .venv/bin/python -m pytest
+    - name: security check frontend
+      command: 'cd frontend && .venv/bin/python -m bandit -r . -c pyproject.toml
+        --format=custom --msg-template "{abspath}:{line}: {test_id}[{severity}]:
+        {msg}" -o bandit-results.txt'
+    - name: security check backend
+      command: 'cd backend && .venv/bin/python -m bandit -r . -c pyproject.toml
+        --format=custom --msg-template "{abspath}:{line}: {test_id}[{severity}]:
+        {msg}" -o bandit-results.txt'
+run:
+  frontend:
+    steps:
+      - name: start frontend application
+        command: cd frontend && .venv/bin/python -m streamlit run --server.address 0.0.0.0
+          --server.port 3000 main.py
+    plan: 20
+    replicas: 1
+    isPublic: true
+    network:
+      path: /
+      stripPath: false
+  backend:
+    steps:
+      - name: start backend application
+        command: cd backend && .venv/bin/python -m uvicorn app:app --reload --port 3000
+          --host 0.0.0.0
+    plan: 20
+    replicas: 1
+    isPublic: false
+  api-docs:
+    steps:
+      - name: deploy docs
+        command: cd backend && .venv/bin/python -m uvicorn doc:app_docs --host 0.0.0.0
+          --port 3000
+    plan: 20
+    replicas: 1
+    isPublic: true
+    network:
+      path: /api
+      stripPath: false
