@@ -2,16 +2,16 @@ schemaVersion: v0.2
 prepare:
   steps:
     - name: install frontend dependencies
-      command: cd frontend && pip install -r requirements.txt
+      command: cd frontend && python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
     - name: install backend dependencies
-      command: cd backend && pip install -r requirements.txt
+      command: cd backend && python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 test:
   steps: []
 run:
   frontend:
     steps:
       - name: start frontend application
-        command: "cd frontend && python -m streamlit run main.py
+        command: "cd frontend && .venv/bin/python -m streamlit run main.py
           --server.headless true --server.address 0.0.0.0 --server.port 3000
           --browser.gatherUsageStats false --logger.level info"
     plan: 20
@@ -23,7 +23,7 @@ run:
   backend:
     steps:
       - name: start backend application
-        command: cd backend && python -m uvicorn app:app --port 3000 --host
+        command: cd backend && .venv/bin/python -m uvicorn app:app --port 3000 --host
           0.0.0.0 --workers 2
     plan: 20
     replicas: 1
@@ -31,7 +31,7 @@ run:
   api-docs:
     steps:
       - name: deploy docs
-        command: cd backend && python -m uvicorn doc:app_docs --host 0.0.0.0
+        command: cd backend && .venv/bin/python -m uvicorn doc:app_docs --host 0.0.0.0
           --port 3000 --workers 2
     plan: 20
     replicas: 1
