@@ -7,6 +7,7 @@ prepare:
     - name: create environment file
       command: |
         cat > ./env << 'EOF'
+        export PATH="$HOME/app:$PATH"
         export UV_PYTHON_INSTALL_DIR=$PWD/.codesphere-internal/.uv-python-install
         export UV_PYTHON_BIN_DIR=$PWD/.codesphere-internal/.uv-python-bin
         export UV_CACHE_DIR=$PWD/.codesphere-internal/.uv
