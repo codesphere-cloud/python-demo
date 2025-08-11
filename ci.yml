@@ -39,15 +39,3 @@ run:
     network:
       path: /api
       stripPath: false
-    plan: 8
-    replicas: 1
-    isPublic: true
-    network:
-      path: /api
-      stripPath: false
-    plan: 8
-    replicas: 1
-    isPublic: true
-    network:
-      path: /api
-      stripPath: false
