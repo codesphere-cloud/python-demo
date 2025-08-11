@@ -1,33 +1,19 @@
 schemaVersion: v0.2
 prepare:
   steps:
-    - name: install uv standalone version
-      command: curl -LsSf https://astral.sh/uv/install.sh | env
-        UV_INSTALL_DIR="$HOME/app" sh && chmod +x $HOME/app/uv
-    - name: create environment file
-      command: |
-        cat > ./env << 'EOF'
-        export PATH="$HOME/app:$PATH"
-        export UV_PYTHON_INSTALL_DIR=$PWD/.codesphere-internal/.uv-python-install
-        export UV_PYTHON_BIN_DIR=$PWD/.codesphere-internal/.uv-python-bin
-        export UV_CACHE_DIR=$PWD/.codesphere-internal/.uv
-        export UV_PYTHON_CACHE_DIR=$PWD/.codesphere-internal/.uv-python
-        EOF
-    - name: install frontend environment
-      command: . ./env && cd frontend && { [ ! -d ".venv" ] && uv venv; uv sync
-        --no-dev; }
-    - name: install backend environment
-      command: . ./env && cd backend && { [ ! -d ".venv" ] && uv venv; uv sync
-        --no-dev; }
+    - name: install frontend dependencies
+      command: cd frontend && pip install -r requirements.txt
+    - name: install backend dependencies
+      command: cd backend && pip install -r requirements.txt
 test:
   steps: []
 run:
   frontend:
     steps:
       - name: start frontend application
-        command: ". ./env && cd frontend && uv run streamlit run main.py
+        command: "cd frontend && python -m streamlit run main.py
           --server.headless true --server.address 0.0.0.0 --server.port 3000
-          --browser.gatherUsageStats false --logger.level info "
+          --browser.gatherUsageStats false --logger.level info"
     plan: 20
     replicas: 1
     isPublic: true
@@ -37,7 +23,7 @@ run:
   backend:
     steps:
       - name: start backend application
-        command: . ./env && cd backend && uv run uvicorn app:app --port 3000 --host
+        command: cd backend && python -m uvicorn app:app --port 3000 --host
           0.0.0.0 --workers 2
     plan: 20
     replicas: 1
@@ -45,8 +31,14 @@ run:
   api-docs:
     steps:
       - name: deploy docs
-        command: . ./env && cd backend && uv run uvicorn doc:app_docs --host 0.0.0.0
+        command: cd backend && python -m uvicorn doc:app_docs --host 0.0.0.0
           --port 3000 --workers 2
+    plan: 20
+    replicas: 1
+    isPublic: true
+    network:
+      path: /api
+      stripPath: false
     plan: 20
     replicas: 1
     isPublic: true

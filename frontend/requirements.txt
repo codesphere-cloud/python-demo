@@ -1,0 +1,12 @@
+# Main dependencies
+numpy>=2.2.6
+pandas>=2.3.0
+plotly>=6.1.2
+pytest-cov>=6.1.1
+pytest-profiling>=1.8.1
+requests>=2.32.4
+streamlit>=1.45.1
+
+# Dev dependencies (for testing and security checks)
+bandit>=1.8.3
+pytest>=8.4.0
