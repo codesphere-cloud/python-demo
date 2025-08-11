@@ -4,7 +4,7 @@ prepare:
     - name: install frontend dependencies
       command: cd frontend && virtualenv .venv && .venv/bin/pip install -r requirements.txt
     - name: install backend dependencies
-      command: cd backend && python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
+      command: cd backend && virtualenv .venv && .venv/bin/pip install -r requirements.txt
 test:
   steps: []
 run:
