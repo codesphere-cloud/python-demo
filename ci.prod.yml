@@ -9,7 +9,7 @@ prepare:
         $HOME/.local/bin/cs
     - name: install uv standalone version
       command: nix-env -iA nixpkgs.uv
-    - name: "set ev vars "
+    - name: "set env vars "
       command: . .env && cs set-env -w $WORKSPACE_ID -t $TEAM_ID --env-var
         UV_PYTHON_INSTALL_DIR=$PWD/.codesphere-internal/.uv-python-install
         --env-var UV_PYTHON_BIN_DIR=$PWD/.codesphere-internal/.uv-python-bin
