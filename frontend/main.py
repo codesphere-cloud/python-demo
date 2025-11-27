@@ -7,8 +7,8 @@ import requests
 API_URL = f"http://ws-server-{os.getenv('WORKSPACE_ID', 123456)}-backend.workspaces:3000/api/data"
 
 st.set_page_config(
-    page_title="Streamlit Demo",
-    page_icon="🎈",
+    page_title="Porsche Demo",
+    page_icon="🎉",
     layout="wide"
 )
 
@@ -42,7 +42,7 @@ def fetch_data(url: str, points: int):
         return pd.DataFrame()
 
 
-st.header(f"Interactive {chart_type}")
+st.header(f"Mein neues {chart_type}")
 st.write(f"Displaying a chart with {num_points} random data points.")
 
 
