@@ -46,8 +46,8 @@ def create_data(points: int, db: Session) -> Dict:
     db_points = [
         DataPoint(
             batch_id=batch_id,
-            value_a=row['A'],
-            value_b=row['B']
+            value_a=float(row['A']),
+            value_b=float(row['B'])
         )
         for _, row in chart_data.iterrows()
     ]
