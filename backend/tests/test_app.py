@@ -3,7 +3,9 @@ import pandas as pd
 import numpy as np
 from dataclasses import dataclass
 from typing import List, Optional, Type, Dict, Any
+from unittest.mock import MagicMock
 from app import create_data
+
 
 @dataclass
 class Case:
@@ -31,23 +33,36 @@ TEST_CASES: List[Case] = [
     ),
 ]
 
+
+@pytest.fixture
+def mock_db():
+    """Create a mock database session for testing."""
+    db = MagicMock()
+    return db
+
+
 @pytest.mark.parametrize(
     "test_case",
     TEST_CASES,
     ids=[tc.name for tc in TEST_CASES] 
 )
-def test_create_data(test_case: Case):
+def test_create_data(test_case: Case, mock_db):
     if test_case.expected_exception:
         with pytest.raises(test_case.expected_exception):
-            create_data(points=test_case.input_points)
+            create_data(points=test_case.input_points, db=mock_db)
         return
 
-    result = create_data(points=test_case.input_points)
+    result = create_data(points=test_case.input_points, db=mock_db)
 
     assert isinstance(result, dict)
     assert 'index' in result
     assert 'columns' in result
     assert 'data' in result
+    
+    # Verify database operations were called
+    if test_case.input_points > 0:
+        mock_db.add_all.assert_called_once()
+        mock_db.commit.assert_called_once()
 
     assert result['columns'] == ['A', 'B']
     assert len(result['index']) == test_case.input_points

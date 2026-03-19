@@ -20,6 +20,23 @@ test:
         --format=custom --msg-template "{abspath}:{line}: {test_id}[{severity}]:
         {msg}" -o bandit-results.txt'
 run:
+  managed-nextcloud:
+    provider:
+      name: postgres
+      version: v1
+    plan:
+      id: 0
+      parameters:
+        storage: 1000
+        cpu: 5
+        memory: 500
+    config:
+      version: "17.6"
+      userName: app
+      databaseName: app
+    secrets:
+      userPassword: ${{ workspace.env.DB_PASSWORD }}
+      superuserPassword: ${{ workspace.env.DB_PASSWORD }}
   frontend:
     steps:
       - name: start frontend application
