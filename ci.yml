@@ -31,7 +31,7 @@ run:
   backend:
     steps:
       - name: start backend application
-        command: . ./env && cd backend && uv run uvicorn app:app --port 3000 --host
+        command: cd backend && uv run uvicorn app:app --port 3000 --host
           0.0.0.0 --workers 2
     plan: 8
     replicas: 1
@@ -44,7 +44,7 @@ run:
   api-docs:
     steps:
       - name: deploy docs
-        command: . ./env && cd backend && uv run uvicorn doc:app_docs --host 0.0.0.0
+        command: cd backend && uv run uvicorn doc:app_docs --host 0.0.0.0
           --port 3000 --workers 2
     plan: 8
     replicas: 1
