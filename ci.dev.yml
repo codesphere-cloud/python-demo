@@ -2,8 +2,8 @@ schemaVersion: v0.2
 prepare:
   steps:
     - name: install uv standalone version
-      command: curl -LsSf https://astral.sh/uv/install.sh | env
-        UV_INSTALL_DIR="$HOME/app" sh && chmod +x $HOME/app/uv
+      command: command -v uv >/dev/null 2>&1 || { curl -LsSf https://astral.sh/uv/install.sh
+        | env UV_INSTALL_DIR="$HOME/app" sh && chmod +x $HOME/app/uv; }
     - name: install frontend environment
       command: cd frontend && { [ ! -d ".venv" ] && UV_PYTHON_INSTALL_DIR=/home/user/app/.codesphere-internal/.uv-python-install UV_PYTHON_BIN_DIR=/home/user/app/.codesphere-internal/.uv-python-bin UV_CACHE_DIR=/home/user/app/.codesphere-internal/.uv UV_PYTHON_CACHE_DIR=/home/user/app/.codesphere-internal/.uv-python uv venv; UV_PYTHON_INSTALL_DIR=/home/user/app/.codesphere-internal/.uv-python-install UV_PYTHON_BIN_DIR=/home/user/app/.codesphere-internal/.uv-python-bin UV_CACHE_DIR=/home/user/app/.codesphere-internal/.uv UV_PYTHON_CACHE_DIR=/home/user/app/.codesphere-internal/.uv-python uv sync; }
     - name: install backend environment
