@@ -1,24 +1,12 @@
 schemaVersion: v0.2
 prepare:
   steps:
-    - name: install Codesphere cli tool
-      command: mkdir -p $HOME/.local/bin && wget -qO-
-        'https://api.github.com/repos/codesphere-cloud/cs-go/releases/latest' |
-        grep linux_amd64 | grep browser_download_url | sed s/.*https/https/ |
-        sed s/\".*$// | xargs wget -O $HOME/.local/bin/cs && chmod +x
-        $HOME/.local/bin/cs
     - name: install uv standalone version
       command: nix-env -iA nixpkgs.uv
-    - name: "set ev vars "
-      command: . .env && cs set-env -w $WORKSPACE_ID -t $TEAM_ID --env-var
-        UV_PYTHON_INSTALL_DIR=$PWD/.codesphere-internal/.uv-python-install
-        --env-var UV_PYTHON_BIN_DIR=$PWD/.codesphere-internal/.uv-python-bin
-        --env-var UV_CACHE_DIR=$PWD/.codesphere-internal/.uv --env-var
-        UV_PYTHON_CACHE_DIR=$PWD/.codesphere-internal/.uv-python
     - name: install frontend environment
-      command: cd frontend && { [ ! -d ".venv" ] && uv venv; uv sync --no-dev; }
+      command: cd frontend && { [ ! -d ".venv" ] && UV_PYTHON_INSTALL_DIR=/home/user/app/.codesphere-internal/.uv-python-install UV_PYTHON_BIN_DIR=/home/user/app/.codesphere-internal/.uv-python-bin UV_CACHE_DIR=/home/user/app/.codesphere-internal/.uv UV_PYTHON_CACHE_DIR=/home/user/app/.codesphere-internal/.uv-python uv venv; UV_PYTHON_INSTALL_DIR=/home/user/app/.codesphere-internal/.uv-python-install UV_PYTHON_BIN_DIR=/home/user/app/.codesphere-internal/.uv-python-bin UV_CACHE_DIR=/home/user/app/.codesphere-internal/.uv UV_PYTHON_CACHE_DIR=/home/user/app/.codesphere-internal/.uv-python uv sync --no-dev; }
     - name: install backend environment
-      command: cd backend && { [ ! -d ".venv" ] && uv venv; uv sync --no-dev; }
+      command: cd backend && { [ ! -d ".venv" ] && UV_PYTHON_INSTALL_DIR=/home/user/app/.codesphere-internal/.uv-python-install UV_PYTHON_BIN_DIR=/home/user/app/.codesphere-internal/.uv-python-bin UV_CACHE_DIR=/home/user/app/.codesphere-internal/.uv UV_PYTHON_CACHE_DIR=/home/user/app/.codesphere-internal/.uv-python uv venv; UV_PYTHON_INSTALL_DIR=/home/user/app/.codesphere-internal/.uv-python-install UV_PYTHON_BIN_DIR=/home/user/app/.codesphere-internal/.uv-python-bin UV_CACHE_DIR=/home/user/app/.codesphere-internal/.uv UV_PYTHON_CACHE_DIR=/home/user/app/.codesphere-internal/.uv-python uv sync --no-dev; }
 test:
   steps: []
 run:
@@ -34,6 +22,11 @@ run:
     network:
       path: /
       stripPath: false
+    env:
+      UV_PYTHON_INSTALL_DIR: /home/user/app/.codesphere-internal/.uv-python-install
+      UV_PYTHON_BIN_DIR: /home/user/app/.codesphere-internal/.uv-python-bin
+      UV_CACHE_DIR: /home/user/app/.codesphere-internal/.uv
+      UV_PYTHON_CACHE_DIR: /home/user/app/.codesphere-internal/.uv-python
   backend:
     steps:
       - name: start backend application
@@ -42,6 +35,11 @@ run:
     plan: 8
     replicas: 1
     isPublic: false
+    env:
+      UV_PYTHON_INSTALL_DIR: /home/user/app/.codesphere-internal/.uv-python-install
+      UV_PYTHON_BIN_DIR: /home/user/app/.codesphere-internal/.uv-python-bin
+      UV_CACHE_DIR: /home/user/app/.codesphere-internal/.uv
+      UV_PYTHON_CACHE_DIR: /home/user/app/.codesphere-internal/.uv-python
   api-docs:
     steps:
       - name: deploy docs
